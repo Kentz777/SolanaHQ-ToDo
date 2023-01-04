@@ -19,6 +19,9 @@ export function useTodo() {
     const [todos, setTodos] = useState([])
     const [loading, setLoading] = useState(false)
     const [transactionPending, setTransactionPending] = useState(false)
+    const [input, setInput] = useState("")
+
+    console.log(input)
 
     const program = useMemo(() => {
         if (anchorWallet) {
@@ -82,19 +85,32 @@ export function useTodo() {
         }
     }
 
-    const addTodo = async () => {
+    const addTodo = async (e) => {
+        e.preventDefault()
         if (program && publicKey) {
             try {
                 setTransactionPending(true)
                 const [profilePda, profileBump] = findProgramAddressSync([utf8.encode('USER_STATE'), publicKey.toBuffer()], program.programId)
                 const [todoPda, todoBump] = findProgramAddressSync([utf8.encode('TODO_STATE'), publicKey.toBuffer(), Uint8Array.from([lastTodo])], program.programId)
 
-                const content = prompt('Please input todo content')
+                if(input){
+                    await program.methods
+                    .addTodo(input)
+                    .accounts({
+                        userProfile: profilePda,
+                        todoAccount: todoPda,
+                        authority: publicKey,
+                        systemProgram: SystemProgram.programId,
+                    })
+                    .rpc()
+                    toast.success('Successfully added todo')
+                }
+
+                /*const content = prompt('Please input todo content')
                 if (!content) {
                     setTransactionPending(false)
                     return
                 }
-
                 await program.methods
                     .addTodo(content)
                     .accounts({
@@ -105,11 +121,13 @@ export function useTodo() {
                     })
                     .rpc()
                 toast.success('Successfully added todo.')
+                e.preventDefault()*/
             } catch (error) {
                 console.log(error)
                 toast.error(error.toString())
             } finally {
                 setTransactionPending(false)
+                setInput("")
             }
         }
     }
@@ -171,5 +189,5 @@ export function useTodo() {
     const incompleteTodos = useMemo(() => todos.filter((todo) => !todo.account.marked), [todos])
     const completedTodos = useMemo(() => todos.filter((todo) => todo.account.marked), [todos])
 
-    return { initialized, initializeUser, loading, transactionPending, completedTodos, incompleteTodos, addTodo, markTodo, removeTodo }
+    return { initialized, initializeUser, loading, transactionPending, completedTodos, input, incompleteTodos, setInput, addTodo, markTodo, removeTodo }
 }

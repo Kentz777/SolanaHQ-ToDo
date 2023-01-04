@@ -36,21 +36,23 @@
     border-radius: var(--br-2xl);
     display: flex;
     align-items: center;
+    border: #512da8 1px solid;
  }
 
  .inputContainer {
     width: 90%;
+   
  }
 
   #inputField {
     width: 100%;
     background-color: transparent;
-    border: none;
     outline: none;
     color: white;
     font-size: 18px;
     padding: 10px 0px;
     margin-left: 15px;
+    
   }
 
 .mainContainer {
@@ -58,6 +60,14 @@
     flex-direction: column;
     gap: 1rem;
 }
+
+
+
+
+
+
+
+
 
 @media (min-width: 640px) {
     .container {

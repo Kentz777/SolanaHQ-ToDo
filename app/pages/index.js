@@ -6,17 +6,18 @@ import styles from '../styles/Home.module.css'
 
 
 const Home = () => {
-    const { initialized, initializeUser, loading, transactionPending, completedTodos, incompleteTodos, addTodo, markTodo, removeTodo, markStaticTodo,removeStaticTodo, addStaticTodo, input,  handleChange } = useTodo()
+    const { initialized, initializeUser, loading, transactionPending, completedTodos, incompleteTodos, addTodo, markTodo, removeTodo, markStaticTodo,removeStaticTodo, addStaticTodo, input, setInput,  handleChange } = useTodo()
 
-    return (
+    return (  
+
         <div className={styles.container}>
             <div className={styles.actionsContainer}>
                 {initialized ? (
                     <div className={styles.todoInput}>
                         <div className={`${styles.todoCheckbox} ${styles.checked}`} />
                         <div className={styles.inputContainer}>
-                            <form onSubmit={()=> addTodo()}>
-                                <input value = {input} onChange={handleChange} id={styles.inputField} type="text" placeholder='Create a new todo...' />
+                            <form onSubmit={addTodo}>
+                                <input value = {input} onChange={(e)=>setInput(e.target.value)} id={styles.inputField} type="text" placeholder='Create a new todo...' autoComplete='off' />
                             </form>
                         </div>
                         <div className={styles.iconContainer}>
@@ -27,6 +28,8 @@ const Home = () => {
                     <button type="button" className={styles.button} onClick={() => initializeUser()} disabled={transactionPending}>
                         Initialize
                     </button>
+
+
                 )}
                 <WalletMultiButton />
             </div>
